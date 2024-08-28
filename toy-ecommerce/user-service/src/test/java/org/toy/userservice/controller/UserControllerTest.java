@@ -34,7 +34,7 @@ class UserControllerTest {
     @Test
     void healthCheck() throws Exception {
         mockMvc.perform(
-                get("/health_check")
+                get("/user-service/health_check")
                         .contentType(contentType)
                         .accept(contentType)
                 )
@@ -45,7 +45,7 @@ class UserControllerTest {
     @Test
     void welcome() throws Exception {
         mockMvc.perform(
-                get("/welcome")
+                get("/user-service/welcome")
                         .contentType(contentType)
                         .accept(contentType)
                 )
@@ -61,12 +61,35 @@ class UserControllerTest {
         user.setPassword("test1234");
 
         mockMvc.perform(
-                post("/users")
+                post("/user-service/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(contentType)
                         .accept(contentType)
                 )
                 .andExpect(status().isCreated())
+                .andDo(print());
+    }
+
+    @Test
+    void getUsers() throws Exception {
+        mockMvc.perform(
+                        get("/user-service/users")
+                                .contentType(contentType)
+                                .accept(contentType)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void getUser() throws Exception {
+        String userId = "test@toy.com";
+        mockMvc.perform(
+                        get("/user-service/users/" + userId)
+                                .contentType(contentType)
+                                .accept(contentType)
+                )
+                .andExpect(status().isNotFound())
                 .andDo(print());
     }
 }
