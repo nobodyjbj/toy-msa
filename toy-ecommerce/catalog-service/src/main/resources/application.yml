@@ -3,25 +3,27 @@ server:
 
 spring:
   application:
-    name: user-service
+    name: catalog-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/toy_msa?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: 1111
   jpa:
+    database: mysql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     properties:
       hibernate:
         format_sql: true
-        default_batch_fetch_size: 1000 #최적화 옵션
-    show-sql: true
-    generate-ddl: true
-    database: mysql
+        show_sql: true
+        default_batch_fetch_size: 1000
     defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 eureka:
   client:
     register-with-eureka: true
@@ -30,6 +32,6 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-greeting:
-  message: Welcome to the Simple E-commerce.
-
+logging:
+  level:
+    org.toy.catalogservice: debug

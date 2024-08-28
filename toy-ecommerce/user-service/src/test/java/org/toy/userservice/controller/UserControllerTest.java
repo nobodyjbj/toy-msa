@@ -34,7 +34,7 @@ class UserControllerTest {
     @Test
     void healthCheck() throws Exception {
         mockMvc.perform(
-                get("/user-service/health_check")
+                get("/user-service/health-check")
                         .contentType(contentType)
                         .accept(contentType)
                 )
