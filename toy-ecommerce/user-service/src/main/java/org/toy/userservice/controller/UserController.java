@@ -11,7 +11,7 @@ import org.toy.userservice.vo.RequestUser;
 import org.toy.userservice.vo.ResponseUser;
 
 @RestController
-@RequestMapping("/user-service/")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class UserController {
     private final Greeting greeting;
