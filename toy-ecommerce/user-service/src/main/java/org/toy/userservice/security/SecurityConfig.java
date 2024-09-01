@@ -15,13 +15,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import org.toy.userservice.service.UserService;
 
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -30,9 +31,10 @@ public class SecurityConfig {
     private final Environment environment;
     private final PasswordEncoder passwordEncoder;
 
-    public static final String ALLOWED_IP_ADDRESS = "127.0.0.1";
-    public static final String SUBNET = "/32";
-    public static final IpAddressMatcher ALLOWED_IP_ADDRESS_MATCHER = new IpAddressMatcher(ALLOWED_IP_ADDRESS + SUBNET);
+    // 여러 개의 허용 IP를 리스트로 정의
+    public static final List<String> ALLOWED_IP_ADDRESSES = List.of("127.0.0.1/32", "192.168.1.1/32", "10.0.0.1/32");
+    public static final List<IpAddressMatcher> ALLOWED_IP_ADDRESS_MATCHERS =
+            ALLOWED_IP_ADDRESSES.stream().map(IpAddressMatcher::new).collect(Collectors.toList());
 
     public SecurityConfig(UserService userService, Environment environment, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -65,8 +67,7 @@ public class SecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                                .requestMatchers("/**").access(
-                                        new WebExpressionAuthorizationManager("hasIpAddress('127.0.0.1') or hasIpAddress('192.0.0.2')"))
+                                .requestMatchers("/**").access(this::hasIpAddress)
                                 .anyRequest().authenticated()
                         )
                 .authenticationManager(authenticationManager)
@@ -79,7 +80,10 @@ public class SecurityConfig {
     }
 
     private AuthorizationDecision hasIpAddress(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
-        return new AuthorizationDecision(ALLOWED_IP_ADDRESS_MATCHER.matches(object.getRequest()));
+        return new AuthorizationDecision(
+                ALLOWED_IP_ADDRESS_MATCHERS.stream()
+                        .anyMatch(matcher -> matcher.matches(object.getRequest()))
+        );
     }
 
     private AuthenticationFilter getAuthenticationFilter(AuthenticationManager authenticationManager) {
