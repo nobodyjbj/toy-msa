@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.toy.userservice.vo.RequestLogin;
 import org.toy.userservice.vo.RequestUser;
 
 import java.nio.charset.StandardCharsets;
@@ -34,7 +35,7 @@ class UserControllerTest {
     @Test
     void healthCheck() throws Exception {
         mockMvc.perform(
-                get("/user-service/health-check")
+                get("/health-check")
                         .contentType(contentType)
                         .accept(contentType)
                 )
@@ -45,7 +46,7 @@ class UserControllerTest {
     @Test
     void welcome() throws Exception {
         mockMvc.perform(
-                get("/user-service/welcome")
+                get("/welcome")
                         .contentType(contentType)
                         .accept(contentType)
                 )
@@ -61,7 +62,7 @@ class UserControllerTest {
         user.setPassword("test1234");
 
         mockMvc.perform(
-                post("/user-service/users")
+                post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(contentType)
                         .accept(contentType)
@@ -73,7 +74,7 @@ class UserControllerTest {
     @Test
     void getUsers() throws Exception {
         mockMvc.perform(
-                        get("/user-service/users")
+                        get("/users")
                                 .contentType(contentType)
                                 .accept(contentType)
                 )
@@ -85,11 +86,27 @@ class UserControllerTest {
     void getUser() throws Exception {
         String userId = "test@toy.com";
         mockMvc.perform(
-                        get("/user-service/users/" + userId)
+                        get("/users/" + userId)
                                 .contentType(contentType)
                                 .accept(contentType)
                 )
                 .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    void login() throws Exception {
+        RequestLogin user = new RequestLogin();
+        user.setEmail("test1@toy.com");
+        user.setPassword("test1234");
+
+        mockMvc.perform(
+                        post("/login")
+                                .content(objectMapper.writeValueAsString(user))
+                                .contentType(contentType)
+                                .accept(contentType)
+                )
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
