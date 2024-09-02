@@ -32,7 +32,7 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
 
     // 여러 개의 허용 IP를 리스트로 정의
-    public static final List<String> ALLOWED_IP_ADDRESSES = List.of("127.0.0.1/32", "192.168.1.1/32", "10.0.0.1/32");
+    public static final List<String> ALLOWED_IP_ADDRESSES = List.of("127.0.0.1/32", "172.19.207.191/32", "10.0.0.1/32");
     public static final List<IpAddressMatcher> ALLOWED_IP_ADDRESS_MATCHERS =
             ALLOWED_IP_ADDRESSES.stream().map(IpAddressMatcher::new).collect(Collectors.toList());
 
