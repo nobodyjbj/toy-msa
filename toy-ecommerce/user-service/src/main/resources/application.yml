@@ -33,10 +33,17 @@ eureka:
 greeting:
   message: Welcome to the Simple E-commerce.
 
-token:
-  expiration_time: 86400000
-  secret: toy_mas_user_service_token_test
-
 logging:
   level:
     org.toy.userservice: debug
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans
+
+
+#token:
+#  expiration_time: 86400000
+#  secret: toy_mas_user_service_token_test
