@@ -23,6 +23,14 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
+            - Path=/user-service/actuator/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
             - Path=/user-service/login
             - Method=POST
           filters:
@@ -54,5 +62,10 @@ spring:
           predicates:
             - Path=/orders-service/*
 
-token:
-  secret: toy_mas_user_service_token_test
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace
+#token:
+#  secret: toy_mas_user_service_token_test
