@@ -56,11 +56,11 @@ spring:
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
           predicates:
-            - Path=/catalog-service/*
+            - Path=/catalog-service/**
         - id: orders-service
           uri: lb://ORDERS-SERVICE
           predicates:
-            - Path=/orders-service/*
+            - Path=/orders-service/**
   rabbitmq:
     host: 127.0.0.1
     port: 5672
