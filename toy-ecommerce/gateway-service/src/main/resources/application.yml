@@ -61,11 +61,15 @@ spring:
           uri: lb://ORDERS-SERVICE
           predicates:
             - Path=/orders-service/*
-
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
 management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httptrace
+        include: refresh, health, beans, httptrace, busrefresh
 #token:
 #  secret: toy_mas_user_service_token_test
