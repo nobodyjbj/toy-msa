@@ -1,2 +1,10 @@
+# 대칭키
+#encrypt:
+#  key: spring-project-toy-msa-encrypt-test
+
+# 비대칭키
 encrypt:
-  key: spring-project-toy-msa-encrypt-test
+  key-store:
+    location: file://${user.home}/IdeaProjects/toy-msa-keystore/apiEncryptionKey.jks
+    password: test1234
+    alias: apiEncryptionKey
