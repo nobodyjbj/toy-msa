@@ -2,6 +2,8 @@ package org.toy.userservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,6 +29,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final OrderServiceClient orderServiceClient;
+    private final CircuitBreakerFactory<?, ?> circuitBreakerFactory;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -60,7 +63,13 @@ public class UserService implements UserDetailsService {
 //        } catch (Exception e) {
 //            log.error(e.getMessage());
 //        }
-        List<ResponseOrder> orders = orderServiceClient.getOrders(userId);
+
+//        List<ResponseOrder> orders = orderServiceClient.getOrders(userId);
+
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+        List<ResponseOrder> orders = circuitBreaker.run(() ->
+                orderServiceClient.getOrders(userId), throwable -> new ArrayList<>()
+        );
 
         return ResponseUser.of(userEntity, orders);
     }
