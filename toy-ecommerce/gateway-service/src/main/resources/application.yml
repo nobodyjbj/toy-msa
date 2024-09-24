@@ -60,6 +60,14 @@ spring:
         - id: orders-service
           uri: lb://ORDERS-SERVICE
           predicates:
+            - Path=/orders-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/orders-service/(?<segment>.*), /$\{segment}
+        - id: orders-service
+          uri: lb://ORDERS-SERVICE
+          predicates:
             - Path=/orders-service/**
   rabbitmq:
     host: 127.0.0.1
@@ -70,6 +78,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httptrace, busrefresh
+        include: refresh, health, beans, httptrace, busrefresh, info, prometheus, metrics
 #token:
 #  secret: toy_mas_user_service_token_test

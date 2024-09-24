@@ -44,6 +44,7 @@ dependencies {
 	implementation 'io.zipkin.brave:brave-instrumentation-spring-web'
 	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 	implementation 'io.github.openfeign:feign-micrometer'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'

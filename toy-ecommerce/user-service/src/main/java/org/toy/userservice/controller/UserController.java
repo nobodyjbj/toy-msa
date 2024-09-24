@@ -1,5 +1,6 @@
 package org.toy.userservice.controller;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/health-check")
+    @Timed(value = "user.status", longTask = true)
     public String healthCheck() {
         return String.format("It's Working in User Service"
                 + ", port(local.server.port)=" + environment.getProperty("local.server.port")
@@ -28,6 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/welcome")
+    @Timed(value = "user.welcome", longTask = true)
     public String welcome() {
         return greeting.getMessage();
     }

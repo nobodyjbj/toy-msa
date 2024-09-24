@@ -17,6 +17,11 @@ spring:
     generate-ddl: true
     database: mysql
     defer-datasource-initialization: true
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
 eureka:
   client:
     register-with-eureka: true
@@ -27,6 +32,10 @@ eureka:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, busrefresh, info, prometheus, metrics
   tracing:
     sampling:
       probability: 1.0
