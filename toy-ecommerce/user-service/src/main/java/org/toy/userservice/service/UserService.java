@@ -65,7 +65,7 @@ public class UserService implements UserDetailsService {
 //        }
 
 //        List<ResponseOrder> orders = orderServiceClient.getOrders(userId);
-
+        log.info("Before call orders microservice");
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
         List<ResponseOrder> orders = circuitBreaker.run(() ->
                 orderServiceClient.getOrders(userId), throwable -> new ArrayList<>()
